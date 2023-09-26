@@ -1,12 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-// #[derive(Clone, Debug)]
-// enum NodeListState {
-//     List(Vec<Node>),
-//     Nil
-// }
-
 type NodeListState = Option<Vec<Node>>;
 
 #[derive(Debug)]
@@ -30,7 +24,6 @@ impl Container {
             self.nodes.replace(Some(vb));
         }
     }
-
 }
 
 #[derive(Clone, Debug)]
@@ -54,25 +47,23 @@ fn main() {
 
     println!("addr of head: {:p}", head);
 
-    match &*head.nodes.borrow() {
-        Some(v) => {
-            println!("space 0. id: {}, points at: {:p}", v[0].id, v[0].ref_parent);
-            println!("space 1. id: {}, points at: {:p}", v[1].id, v[1].ref_parent)
-        }
-        _ => panic!("fuck!!")
-    };
+    {
+        let v = head.nodes.borrow();
+        let v = v.as_ref().unwrap();
+        println!("space 0. id: {}, points at: {:p}", v[0].id, v[0].ref_parent);
+        println!("space 1. id: {}, points at: {:p}", v[1].id, v[1].ref_parent)
+    }
 
     let c = Node::new(3, Rc::clone(&head));
     let d = Node::new(4, Rc::clone(&head));
     let mut vec = vec![c, d];
     head.add_nodes(&mut vec);
 
-    match &*head.nodes.borrow() {
-        Some(v) => {
-            println!("space 2. id: {}, points at: {:p}", v[2].id, v[2].ref_parent);
-            println!("space 3. id: {}, points at: {:p}", v[3].id, v[3].ref_parent)
-        }
-        _ => panic!("fuck!!")
-    };
+    {
+        let v = head.nodes.borrow();
+        let v = v.as_ref().unwrap();
+        println!("space 2. id: {}, points at: {:p}", v[2].id, v[2].ref_parent);
+        println!("space 3. id: {}, points at: {:p}", v[3].id, v[3].ref_parent)
+    }
     
 }
