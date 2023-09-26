@@ -1,11 +1,13 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[derive(Clone, Debug)]
-enum NodeListState {
-    List(Vec<Node>),
-    Nil
-}
+// #[derive(Clone, Debug)]
+// enum NodeListState {
+//     List(Vec<Node>),
+//     Nil
+// }
+
+type NodeListState = Option<Vec<Node>>;
 
 #[derive(Debug)]
 struct Container {
@@ -14,18 +16,18 @@ struct Container {
 
 impl Container {
     fn new() -> Self {
-        Self { nodes: RefCell::new(NodeListState::Nil) }
+        Self { nodes: RefCell::new(None) }
     }
 
     fn init(&self, v: Vec<Node>) -> () {
-        self.nodes.replace(NodeListState::List(v));
+        self.nodes.replace(Some(v));
     }
 
     fn add_nodes(&self, vadd: &mut Vec<Node>) -> () {
         let tmp = self.nodes.borrow_mut().clone();
-        if let NodeListState::List(mut vb) = tmp {
+        if let Some(mut vb) = tmp {
             vb.append(vadd);
-            self.nodes.replace(NodeListState::List(vb));
+            self.nodes.replace(Some(vb));
         }
     }
 
@@ -53,7 +55,7 @@ fn main() {
     println!("addr of head: {:p}", head);
 
     match &*head.nodes.borrow() {
-        NodeListState::List(v) => {
+        Some(v) => {
             println!("space 0. id: {}, points at: {:p}", v[0].id, v[0].ref_parent);
             println!("space 1. id: {}, points at: {:p}", v[1].id, v[1].ref_parent)
         }
@@ -66,7 +68,7 @@ fn main() {
     head.add_nodes(&mut vec);
 
     match &*head.nodes.borrow() {
-        NodeListState::List(v) => {
+        Some(v) => {
             println!("space 2. id: {}, points at: {:p}", v[2].id, v[2].ref_parent);
             println!("space 3. id: {}, points at: {:p}", v[3].id, v[3].ref_parent)
         }
