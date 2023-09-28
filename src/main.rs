@@ -18,7 +18,7 @@ impl Container {
     }
 
     fn add_nodes(&self, vadd: &mut Vec<Node>) -> () {
-        let tmp = self.nodes.borrow_mut().clone();
+        let tmp = self.nodes.take();
         if let Some(mut vb) = tmp {
             vb.append(vadd);
             self.nodes.replace(Some(vb));
@@ -26,7 +26,7 @@ impl Container {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug)]
 struct Node {
     id: i32,
     ref_parent: Rc<Container>
